@@ -1,86 +1,62 @@
-var sm2 = angular.module('soundManager2', ['ng']);
+var mod = angular.module('soundManager2', ['ng']);
 
-sm2.factory('SoundManager2', function ($q, $rootScope) {
+var soundManager2Provider = {
+  $get: getSoundManager,
+  options: {
+    url: '/assets',
+    flashVersion: 9,
+    preferFlash: false,
+    debugMode: false
+  }
+}
+
+function wrapper(promise) {
+  return function wrap(functionName) {
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      return promise.then(function (obj) {
+        return obj[functionName].apply(obj, args);
+      });
+    }
+  }
+}
+
+function getSoundManager($q, $rootScope, $timeout) {
   var deferred = $q.defer(),
-    setup = deferred.promise;
+    wrap = wrapper(deferred.promise),
+    options = soundManager2Provider.options;
 
   function resolvePromise() {
     $rootScope.$apply(function () {
       deferred.resolve(window.soundManager);
+      if (typeof soundManager2Provider.options.originalonready === 'function') {
+        soundManager2Provider.options.originalonready.call(null);
+      }
     });
   }
 
-  function createSound(options) {
-    return setup.then(function (soundManager) {
-      return soundManager.createSound(options);
-    });
+  if (!options._instrumented) {
+    options._instrumented = true;
+    options.originalonready = options.onready;
   }
+  options.onready = resolvePromise;
 
-  function canPlayLink(link) {
-    return setup.then(function (soundManager) {
-      return soundManager.canPlayLink(link);
-    });
-  }
-
-  function canPlayMIME(mime) {
-    return setup.then(function (soundManager) {
-      return soundManager.canPlayMIME(mime);
-    });
-  }
-
-  function canPlayURL(url) {
-    return setup.then(function (soundManager) {
-      return soundManager.canPlayURL(url);
-    });
-  }
-
-  function mute() {
-    return setup.then(function (soundManager) {
-      soundManager.mute();
-    });
-  }
-
-  function pauseAll() {
-    return setup.then(function (soundManager) {
-      soundManager.pauseAll();
-    });
-  }
-
-  function resumeAll() {
-    return setup.then(function (soundManager) {
-      soundManager.resumeAll();
-    });
-  }
-
-  function stopAll() {
-    return setup.then(function (soundManager) {
-      soundManager.stopAll();
-    });
-  }
-
-  function unmute() {
-    return setup.then(function (soundManager) {
-      soundManager.unmute();
-    })
-  }
-
-  window.soundManager.setup({
-    url: '/assets',
-    flashVersion: 9,
-    preferFlash: false,
-    debugMode: false,
-    onready: resolvePromise
-  });
+  window.soundManager.setup(options);
 
   return {
-    createSound: createSound,
-    canPlayLink: canPlayLink,
-    canPlayMIME: canPlayMIME,
-    canPlayURL:  canPlayURL,
-    mute:        mute,
-    pauseAll:    pauseAll,
-    resumeAll:   resumeAll,
-    stopAll:     stopAll,
-    unmute:      unmute
+    createSound: wrap('createSound'),
+    canPlayLink: wrap('canPlayLink'),
+    canPlayMIME: wrap('canPlayMIME'),
+    canPlayURL:  wrap('canPlayURL'),
+    mute:        wrap('mute'),
+    pauseAll:    wrap('pauseAll'),
+    resumeAll:   wrap('resumeAll'),
+    stopAll:     wrap('stopAll'),
+    unmute:      wrap('unmute')
   };
-});
+}
+
+getSoundManager.$inject = ['$q', '$rootScope', '$timeout'];
+
+
+mod.provider('SoundManager2', soundManager2Provider);
