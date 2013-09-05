@@ -3,12 +3,16 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-karma');
 
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('default', ['bower:install', 'test']);
   grunt.registerTask('test', ['jshint', 'karma:unit']);
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    bower: {
+      install: 'bower.json'
+    },
     karma: {
       unit: {
         configFile: 'test/karma.conf.js',
