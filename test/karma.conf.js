@@ -7,9 +7,14 @@ module.exports = function (config) {
     files: [
       'lib/angular/angular.js',
       'lib/angular-mocks/angular-mocks.js',
+      'lib/soundmanager/script/soundmanager2.js',
+      'test/spec_helper.js',
       'src/**/*.js',
       'test/**/*.spec.js'
     ],
+    preprocessors: {
+      'src/**/*.js': 'coverage'
+    },
     reporters: ['dots'],
     colors: true,
     logLevel: config.LOG_INFO,
