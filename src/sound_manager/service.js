@@ -58,5 +58,4 @@ function getSoundManager($q, $rootScope, $timeout) {
 
 getSoundManager.$inject = ['$q', '$rootScope', '$timeout'];
 
-
 mod.provider('SoundManager2', soundManager2Provider);
