@@ -1,0 +1,24 @@
+{
+  "name": "ngPlayerHater",
+  "version": "0.0.0",
+  "homepage": "https://github.com/PRX/ngPlayerHater",
+  "authors": [
+    "chrisrhoden <carhoden@gmail.com>"
+  ],
+  "description": "Audio Player for Angular.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "soundmanager": "V2.97a.20130512",
+    "angular": "~1.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.0"
+  }
+}
