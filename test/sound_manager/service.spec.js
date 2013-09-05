@@ -1,6 +1,8 @@
 describe('soundManager2', function () {
   beforeEach(module('soundManager2'));
 
+  var soundManager = window.soundManager;
+
   beforeEach(function () {
     spyOn(soundManager, 'setup');
     spyOn(soundManager, 'createSound');
@@ -27,6 +29,7 @@ describe('soundManager2', function () {
 
   it('calls setup on soundManager', function () {
     inject(function (SoundManager2) {
+      SoundManager2.createSound();
       expect(soundManager.setup).toHaveBeenCalled();
     });
   });
@@ -37,7 +40,7 @@ describe('soundManager2', function () {
   }));
   
   it('promises sounds', inject(function (SoundManager2) {
-    args = {url:"/test.mp3"};
+    var args = {url:'/test.mp3'};
     SoundManager2.createSound(args);
     soundManagerLoaded();
     expect(soundManager.createSound.mostRecentCall.args[0]).toBe(args);
@@ -89,5 +92,5 @@ describe('soundManager2', function () {
     SoundManager2.unmute();
     soundManagerLoaded();
     expect(soundManager.unmute).toHaveBeenCalled();
-  }))
+  }));
 });

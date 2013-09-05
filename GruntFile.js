@@ -110,7 +110,8 @@ module.exports = function (grunt) {
           module: false,
           beforeEach: false,
           inject: false,
-          DEBUG: true
+          DEBUG: true,
+          spyOn: false
         }
       }
     }

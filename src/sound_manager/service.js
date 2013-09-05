@@ -8,20 +8,20 @@ var soundManager2Provider = {
     preferFlash: false,
     debugMode: false
   }
-}
+};
 
 function wrapper(promise) {
   return function wrap(functionName) {
-    return function() {
+    return function () {
       var args = Array.prototype.slice.call(arguments);
       return promise.then(function (obj) {
         return obj[functionName].apply(obj, args);
       });
-    }
-  }
+    };
+  };
 }
 
-function getSoundManager($q, $rootScope, $timeout) {
+function getSoundManager($q, $rootScope) {
   var deferred = $q.defer(),
     wrap = wrapper(deferred.promise),
     options = soundManager2Provider.options;
@@ -56,6 +56,6 @@ function getSoundManager($q, $rootScope, $timeout) {
   };
 }
 
-getSoundManager.$inject = ['$q', '$rootScope', '$timeout'];
+getSoundManager.$inject = ['$q', '$rootScope'];
 
 mod.provider('SoundManager2', soundManager2Provider);
