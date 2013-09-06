@@ -9,7 +9,13 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['bower:install', 'test']);
   grunt.registerTask('test', ['jshint', 'karma:unit']);
-  grunt.registerTask('build', ['concat:dist', 'uglify']);
+  grunt.registerTask('build', 'builds packaged version of script into dist', function (target) {
+    if (typeof target !== 'undefined') {
+      grunt.task.run('concat:' + target, 'uglify:' + target);
+    } else {
+      grunt.task.run('build:debug', 'build:min');
+    }
+  });
   
   /*jshint camelcase: false */
   grunt.initConfig({
@@ -19,11 +25,18 @@ module.exports = function (grunt) {
     },
     concat:  {
       options: {
-        separator: ';',
-        banner: '!function(){\'use strict\';',
-        footer: '}()'
+        separator: ';'
       },
-      dist: {
+      packaged: {
+        src: ['lib/soundmanager/script/soundmanager2-nodebug-jsmin.js', 'tmp/<%= pkg.name %>-<%= pkg.version %>.js'],
+        dest: 'tmp/<%= pkg.name %>-<%= pkg.version %>.packaged.js'
+      },
+      all: {
+        options: {
+          banner: '/* <%= pkg.name %> <%= pkg.version %> */\n(function(){',
+          separator: '})();(function(){',
+          footer: '})()'
+        },
         src: ['src/**/*.js'],
         dest: 'tmp/<%= pkg.name %>-<%= pkg.version %>.js'
       }
@@ -37,7 +50,7 @@ module.exports = function (grunt) {
           dead_code: true
         },
         mangle: true,
-        preserveComments: false,
+        preserveComments: true,
       },
       debug: {
         options: {
@@ -62,7 +75,11 @@ module.exports = function (grunt) {
               DEBUG: true
             }
           },
-          beautify: true
+          beautify: {
+            indent_level: 2,
+            comments: true,
+            beautify: true
+          }
         },
         files: {
           'dist/<%= pkg.name %>-<%= pkg.version %>.debug.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.js']
@@ -70,7 +87,7 @@ module.exports = function (grunt) {
       },
       min: {
         files: {
-          'dist/<%= pkg.name %>-<%= pkg.version %>.min.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.js']
+          'dist/<%= pkg.name %>-<%= pkg.version %>.min.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.release.js']
         }
       }
     },
@@ -102,6 +119,8 @@ module.exports = function (grunt) {
         lastsemic: true,
         browser: true,
         devel: true,
+        strict: true,
+        globalstrict: true,
         globals: {
           angular: false,
           expect: false,
@@ -111,7 +130,8 @@ module.exports = function (grunt) {
           beforeEach: false,
           inject: false,
           DEBUG: true,
-          spyOn: false
+          spyOn: false,
+          jasmine: true
         }
       }
     }

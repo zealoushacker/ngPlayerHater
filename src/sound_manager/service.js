@@ -1,4 +1,6 @@
-var mod = angular.module('soundManager2', ['ng']);
+'use strict';
+
+var mod = angular.module('soundManager2.service', ['ng']);
 
 var soundManager2Provider = {
   $get: getSoundManager,

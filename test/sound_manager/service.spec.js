@@ -1,4 +1,6 @@
 describe('soundManager2', function () {
+  'use strict';
+  
   beforeEach(module('soundManager2'));
 
   var soundManager = window.soundManager;
