@@ -16,6 +16,16 @@ module.exports = function (grunt) {
       grunt.task.run('build:debug', 'build:min');
     }
   });
+
+  var karmaOpts = {
+    configFile: 'test/karma.conf.js',
+    singleRun: true
+  };
+
+  if (process.env.TRAVIS) {
+    karmaOpts.browsers = ['Firefox', 'PhantomJS'];
+    karmaOpts.reporters = ['dots'];
+  }
   
   /*jshint camelcase: false */
   grunt.initConfig({
@@ -92,10 +102,7 @@ module.exports = function (grunt) {
       }
     },
     karma: {
-      unit: {
-        configFile: 'test/karma.conf.js',
-        singleRun: true
-      }
+      unit: karmaOpts
     },
     jshint: {
       files: ['src/**/*.js', 'GruntFile.js', 'test/**/*.js'],
@@ -131,7 +138,8 @@ module.exports = function (grunt) {
           inject: false,
           DEBUG: true,
           spyOn: false,
-          jasmine: true
+          jasmine: true,
+          process: false
         }
       }
     }
