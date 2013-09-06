@@ -5,10 +5,12 @@
   "authors": [
     "chrisrhoden <carhoden@gmail.com>"
   ],
+  "main": "./ng-player-hater.js",
   "description": "Audio Player for Angular.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "src",
     "node_modules",
     "bower_components",
     "test",

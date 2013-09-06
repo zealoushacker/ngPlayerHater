@@ -37,13 +37,13 @@ module.exports = function (grunt) {
       options: {
         separator: ';'
       },
-      packaged: {
+      min: {
         src: ['lib/soundmanager/script/soundmanager2-nodebug-jsmin.js', 'tmp/<%= pkg.name %>-<%= pkg.version %>.js'],
         dest: 'tmp/<%= pkg.name %>-<%= pkg.version %>.packaged.js'
       },
-      all: {
+      debug: {
         options: {
-          banner: '/* <%= pkg.name %> <%= pkg.version %> */\n(function(){',
+          banner: '/**\n' + grunt.file.read('./src/BANNER').replace(/^/gm, '* ') + '\n*/\n(function(){',
           separator: '})();(function(){',
           footer: '})()'
         },
@@ -59,8 +59,7 @@ module.exports = function (grunt) {
           },
           dead_code: true
         },
-        mangle: true,
-        preserveComments: true,
+        mangle: true
       },
       debug: {
         options: {
@@ -89,15 +88,16 @@ module.exports = function (grunt) {
             indent_level: 2,
             comments: true,
             beautify: true
-          }
+          },
+          preserveComments: true
         },
         files: {
-          'dist/<%= pkg.name %>-<%= pkg.version %>.debug.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.js']
+          'ng-player-hater.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.js']
         }
       },
       min: {
         files: {
-          'dist/<%= pkg.name %>-<%= pkg.version %>.min.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.release.js']
+          'ng-player-hater.min.js': ['tmp/<%= pkg.name %>-<%= pkg.version %>.packaged.js']
         }
       }
     },

@@ -1,7 +1,5 @@
 'use strict';
 
-var mod = angular.module('soundManager2.sound', ['soundManager2.service']);
-
 var soundManager2;
 
 function SoundFactory(SoundManager2) {
@@ -55,4 +53,4 @@ for (var i = proxies.length - 1; i >= 0; i -= 1) {
   Sound.prototype[proxies[i]] = promised('sound', apply(proxies[i]));
 }
 
-mod.factory('Sound', SoundFactory);
+angular.module('soundManager2.sound', ['soundManager2.service']).factory('Sound', SoundFactory);

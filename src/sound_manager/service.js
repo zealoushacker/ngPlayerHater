@@ -1,7 +1,5 @@
 'use strict';
 
-var mod = angular.module('soundManager2.service', ['ng']);
-
 var soundManager2Provider = {
   $get: getSoundManager,
   options: {
@@ -60,4 +58,4 @@ function getSoundManager($q, $rootScope) {
 
 getSoundManager.$inject = ['$q', '$rootScope'];
 
-mod.provider('SoundManager2', soundManager2Provider);
+angular.module('soundManager2.service', ['ng']).provider('SoundManager2', soundManager2Provider);
