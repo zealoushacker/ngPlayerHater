@@ -8,7 +8,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('default', ['bower:install', 'test']);
-  grunt.registerTask('test', ['jshint', 'karma:unit']);
+  grunt.registerTask('test', ['bower:install', 'jshint', 'karma:unit']);
   grunt.registerTask('build', 'builds packaged version of script into dist', function (target) {
     if (typeof target !== 'undefined') {
       grunt.task.run('concat:' + target, 'uglify:' + target);
