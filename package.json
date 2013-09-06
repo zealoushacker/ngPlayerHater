@@ -22,7 +22,8 @@
     "grunt-contrib-concat": "~0.3.0",
     "karma-coverage": "~0.1.0",
     "grunt-cli": "~0.1.9",
-    "karma-osx-reporter": "0.0.3"
+    "karma-osx-reporter": "0.0.3",
+    "istanbul": "~0.1.43"
   },
   "scripts": {
     "test": "grunt test"
