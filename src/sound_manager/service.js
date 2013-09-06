@@ -35,10 +35,12 @@ function getSoundManager($q, $rootScope) {
     });
   }
 
-  if (!options._instrumented) {
-    options._instrumented = true;
+  resolvePromise._shim = true;
+
+  if (typeof options.onready !== 'undefined' && !options.onready._shim) {
     options.originalonready = options.onready;
   }
+  
   options.onready = resolvePromise;
 
   window.soundManager.setup(options);

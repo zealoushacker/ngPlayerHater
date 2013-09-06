@@ -29,6 +29,22 @@ describe('soundManager2', function () {
     expect(SoundManager2).toBeDefined();
   }));
 
+  it('calls through to the configured onready', function () {
+    var executed = false;
+    module('soundManager2', function (SoundManager2Provider) {
+      SoundManager2Provider.options.onready = function () {
+        executed = true;
+      };
+    });
+    inject(function (SoundManager2) {
+      if (SoundManager2) {
+        expect(executed).toBe(false);
+        soundManagerLoaded();
+        expect(executed).toBe(true);
+      }
+    });
+  });
+
   it('calls setup on soundManager', function () {
     inject(function (SoundManager2) {
       SoundManager2.createSound();
