@@ -39,8 +39,10 @@ function getSoundManager($q, $rootScope) {
 
   if (typeof options.onready !== 'undefined' && !options.onready._shim) {
     options.originalonready = options.onready;
+  } else {
+    options.originalonready = undefined;
   }
-  
+
   options.onready = resolvePromise;
 
   window.soundManager.setup(options);
