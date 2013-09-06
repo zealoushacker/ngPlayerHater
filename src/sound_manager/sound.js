@@ -1,23 +1,67 @@
 'use strict';
 
-var soundManager2;
+var soundManager2, timeout;
 
-function SoundFactory(SoundManager2) {
+function SoundFactory(SoundManager2, $timeout) {
   soundManager2 = SoundManager2;
+  timeout = $timeout;
   return Sound;
 }
 
-SoundFactory.$inject = ['SoundManager2'];
+function asyncDigest(fun) {
+  return function () {
+    var self = this;
+    timeout(function () {
+      fun.call(self);
+    });
+  };
+}
+
+function generateCallbacks(sound) {
+  return {
+    onload: asyncDigest(function () {
+      if (this.readyState === 1) {
+        sound.loading = true;
+        sound.error   = false;
+      } else if (this.readyState === 2) {
+        sound.error   = true;
+        sound.loading = false;
+      } else if (this.readyState === 3) {
+        sound.loading = false;
+        sound.error   = false;
+      }
+    }),
+    onpause: asyncDigest(function () {
+      sound.paused  = true;
+      sound.playing = false;
+    }),
+    onplay: asyncDigest(function () {
+      sound.paused = false;
+    }),
+    onresume: asyncDigest(function () {
+      sound.paused = false;
+    }),
+    onid3: asyncDigest(function () {
+      angular.copy(this.id3, sound.id3);
+    })
+  };
+}
+
+SoundFactory.$inject = ['SoundManager2', '$timeout'];
 
 function Sound (url) {
   if (typeof url === 'undefined') {
     throw 'URL parameter is required';
   }
+  var options   = generateCallbacks(this);
+  options.url   = url;
   this.playing  = false;
   this.loading  = false;
-  this.paused   = false;
+  this.paused   = true;
+  this.error    = false;
   this.duration = undefined;
-  this.sound    = soundManager2.createSound({url:url});
+  this.id3      = {};
+  this.sound    = soundManager2.createSound(options);
 }
 
 

@@ -21,7 +21,8 @@
     "grunt-bower-task": "~0.3.1",
     "grunt-contrib-concat": "~0.3.0",
     "karma-coverage": "~0.1.0",
-    "grunt-cli": "~0.1.9"
+    "grunt-cli": "~0.1.9",
+    "karma-osx-reporter": "0.0.3"
   },
   "scripts": {
     "test": "grunt test"
