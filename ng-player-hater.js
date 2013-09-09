@@ -14,7 +14,7 @@
     angular.forEach(options, function(value, key) {
       this[key] = value;
     }, this);
-    this._sound = new Sound(options);
+    this._sound = new Sound(options.url);
   }
   Song.prototype.play = function() {
     return this._sound.play();

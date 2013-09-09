@@ -12,7 +12,7 @@ describe('facts', function () {
     var song = playerHater.newSong(soundArguments);
     expect(song).toBeDefined();
     expect(PlayerHaterSound).toHaveBeenCalled();
-    expect(PlayerHaterSound.mostRecentCall.args[0]).toBe(soundArguments);
+    expect(PlayerHaterSound.mostRecentCall.args[0]).toBe(soundArguments.url);
   }));
 
   describe('#play', function () {
