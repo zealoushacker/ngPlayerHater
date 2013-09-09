@@ -25,6 +25,7 @@
   function generateCallbacks(sound) {
     return {
       onload: asyncDigest(function () {
+        DEBUG.instrument('onload', arguments);
         if (this.readyState === 1) {
           sound.loading = true;
           sound.error   = false;
@@ -37,16 +38,20 @@
         }
       }),
       onpause: asyncDigest(function () {
+        DEBUG.instrument('onpause', arguments);
         sound.paused  = true;
         sound.playing = false;
       }),
       onplay: asyncDigest(function () {
+        DEBUG.instrument('onplay', arguments);
         sound.paused = false;
       }),
       onresume: asyncDigest(function () {
+        DEBUG.instrument('onresume', arguments);
         sound.paused = false;
       }),
       onid3: asyncDigest(function () {
+        DEBUG.instrument('onid3', arguments);
         angular.copy(this.id3, sound.id3);
       })
     };

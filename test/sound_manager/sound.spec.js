@@ -60,12 +60,6 @@ describe('PlayerHaterSound', function () {
     describe('after soundManager is loaded', function () {
       beforeEach(soundManagerLoaded);
 
-      function flush() {
-        inject(function ($rootScope) {
-          $rootScope.$digest();
-        });
-      }
-
       it('attempts to create a sound', function () {
         expect(soundManager.createSound).toHaveBeenCalled();
       });

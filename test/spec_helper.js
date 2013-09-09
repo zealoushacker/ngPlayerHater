@@ -2,7 +2,14 @@
 (function () {
   'use strict';
 
-  window.DEBUG = true;
+  window.flush = function () {
+    inject(function ($rootScope, $timeout, $browser) {
+      $rootScope.$digest();
+      if ($browser.deferredFns.length) {
+        $timeout.flush();
+      }
+    });
+  };
 
   window.spyOnInjection = function (injection, $provide) {
     if (typeof $provide === 'undefined') {

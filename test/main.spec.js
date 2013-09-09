@@ -8,6 +8,28 @@ describe('facts', function () {
     spyOnInjection('PlayerHaterSound', $provide);
   }));
 
+  it('is paused while the now playing song is paused', inject(function(playerHater) {
+    expect(playerHater.paused).toBe(true);
+    var song = playerHater.newSong(soundArguments);
+    playerHater.play(song);
+    song._sound.paused = true;
+    expect(playerHater.paused).toBe(true);
+  }));
+
+  it('is not paused when the now playing song is not paused', inject(function(playerHater) {
+    playerHater.play(soundArguments);
+    playerHater.nowPlaying._sound.paused = false;
+    flush();
+    expect(playerHater.paused).toBe(false);
+  }));
+
+  it('stops the now playing song when a new song is played', inject(function(playerHater) {
+    var song = playerHater.play(soundArguments);
+    spyOn(song, 'stop');
+    playerHater.play(soundArguments);
+    expect(song.stop).toHaveBeenCalled();
+  }));
+
   it('creates a new song', inject(function (playerHater, PlayerHaterSound) {
     var song = playerHater.newSong(soundArguments);
     expect(song).toBeDefined();
@@ -16,6 +38,10 @@ describe('facts', function () {
   }));
 
   describe('#play', function () {
+
+    it('returns the song', inject(function (playerHater) {
+      expect(playerHater.play(soundArguments)).toBe(playerHater.nowPlaying);
+    }));
 
     it('accepts a song', inject(function (playerHater) {
       var song = playerHater.newSong(soundArguments);
