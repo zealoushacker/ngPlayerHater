@@ -101,6 +101,15 @@ describe('facts', function () {
     }));
   });
 
+  describe('#seekTo', function () {
+    it('calls the now playing songs setPosition method', inject(function (playerHater) {
+      var song = playerHater.play(soundArguments);
+      spyOn(song, 'setPosition');
+      playerHater.seekTo(514);
+      expect(song.setPosition.mostRecentCall.args[0]).toBe(514);
+    }));
+  });
+
   describe('Songs', function () {
     var song;
 
@@ -118,6 +127,12 @@ describe('facts', function () {
       song._sound.duration = 617;
       flush();
       expect(song.duration).toBe(617);
+    });
+
+    it('calls through to its sounds setPosition', function () {
+      spyOn(song._sound, 'setPosition');
+      song.setPosition(215);
+      expect(song._sound.setPosition.mostRecentCall.args[0]).toBe(215);
     });
   });
 });

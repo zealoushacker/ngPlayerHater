@@ -26,7 +26,7 @@
     };
   }
 
-  var methods = ['play', 'stop', 'resume'];
+  var methods = ['play', 'stop', 'resume', 'setPosition'];
   for (var i = methods.length - 1; i >= 0; i -= 1) {
     Song.prototype[methods[i]] = proxyToSound(methods[i]);
   }
@@ -74,6 +74,10 @@
   PlayerHaterService.prototype.newSong = function (songArguments) {
     return new Song(songArguments);
   };
+
+  PlayerHaterService.prototype.seekTo = function (position) {
+    return this.nowPlaying.setPosition(position);
+  }
 
   PlayerHaterService.$inject = ['phSoundManager', 'PlayerHaterSound', '$rootScope'];
 
