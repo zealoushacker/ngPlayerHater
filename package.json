@@ -1,6 +1,6 @@
 {
   "name": "ngPlayerHater",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Audio Player for Angular.js",
   "main": "index.js",
   "dependencies": {},

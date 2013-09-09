@@ -63,13 +63,13 @@
     if (typeof this.nowPlaying !== 'undefined'){
       this.nowPlaying.resume();
     } else {
-      throw "No Song Loaded";
+      throw 'No Song Loaded';
     }
   };
 
   PlayerHaterService.prototype.pause = function () {
     soundManager.pauseAll();
-  }
+  };
 
   PlayerHaterService.prototype.newSong = function (songArguments) {
     return new Song(songArguments);
@@ -77,7 +77,7 @@
 
   PlayerHaterService.prototype.seekTo = function (position) {
     return this.nowPlaying.setPosition(position);
-  }
+  };
 
   PlayerHaterService.$inject = ['phSoundManager', 'PlayerHaterSound', '$rootScope'];
 

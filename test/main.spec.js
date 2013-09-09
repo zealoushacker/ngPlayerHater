@@ -95,9 +95,9 @@ describe('facts', function () {
     }));
 
     it('throws an error when there is no currently loaded song', inject(function (playerHater) {
-      expect(function () { 
+      expect(function () {
         playerHater.resume();
-      }).toThrow("No Song Loaded");
+      }).toThrow('No Song Loaded');
     }));
   });
 
@@ -114,7 +114,7 @@ describe('facts', function () {
     var song;
 
     beforeEach(inject(function (playerHater) {
-      song = playerHater.newSong({url:"/mp3.mp3", title: "Wishes"});
+      song = playerHater.newSong({url:'/mp3.mp3', title: 'Wishes'});
     }));
 
     it('sets its position based on the sounds position', function () {
