@@ -27,14 +27,15 @@
       onload: asyncDigest(function () {
         DEBUG.instrument('onload', arguments);
         if (this.readyState === 1) {
-          sound.loading = true;
-          sound.error   = false;
+          sound.loading  = true;
+          sound.error    = false;
         } else if (this.readyState === 2) {
-          sound.error   = true;
-          sound.loading = false;
+          sound.error    = true;
+          sound.loading  = false;
         } else if (this.readyState === 3) {
-          sound.loading = false;
-          sound.error   = false;
+          sound.loading  = false;
+          sound.error    = false;
+          sound.duration = this.duration;
         }
       }),
       onpause: asyncDigest(function () {
@@ -53,6 +54,14 @@
       onid3: asyncDigest(function () {
         DEBUG.instrument('onid3', arguments);
         angular.copy(this.id3, sound.id3);
+      }),
+      whileloading: asyncDigest(function () {
+        DEBUG.instrument('whileloading', arguments);
+        sound.duration = this.durationEstimate;
+      }),
+      whileplaying: asyncDigest(function (){
+        DEBUG.instrument('whileplaying', arguments);
+        sound.position = this.position;
       })
     };
   }
@@ -70,6 +79,7 @@
     this.paused   = true;
     this.error    = false;
     this.duration = undefined;
+    this.position = undefined;
     this.id3      = {};
     this.sound    = soundManager2.createSound(options);
   }

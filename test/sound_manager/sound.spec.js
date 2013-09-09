@@ -53,6 +53,10 @@ describe('PlayerHaterSound', function () {
       expect(sound.duration).not.toBeDefined();
     });
 
+    it('has an undefined position', function (){
+      expect(sound.position).not.toBeDefined();
+    });
+
     it('has an empty id3 tag', function () {
       expect(sound.id3).toEqual({});
     });
@@ -129,6 +133,12 @@ describe('PlayerHaterSound', function () {
           expect(sound.error).toBe(false);
         });
 
+        it('copies the duration when readyState is 3', function () {
+          callbacks.onload.call({readyState:3, duration: 212});
+          flush();
+          expect(sound.duration).toBe(212);
+        });
+
         it('passes an onpause callback', function () {
           expect(callbacks.onpause).toBeDefined();
         });
@@ -180,6 +190,26 @@ describe('PlayerHaterSound', function () {
           expect(sound.id3).toEqual({});
           flush();
           expect(sound.id3.artist).toEqual('PRINCE');
+        });
+
+        it('passes a whileloading callback', function () {
+          expect(callbacks.whileloading).toBeDefined();
+        });
+
+        it('copies the duration estimate whileloading', function () {
+          callbacks.whileloading.call({durationEstimate:214});
+          flush();
+          expect(sound.duration).toBe(214);
+        });
+
+        it('passes a whileplaying callback', function () {
+          expect(callbacks.whileplaying).toBeDefined();
+        });
+
+        it('copies the position whileplaying', function () {
+          callbacks.whileplaying.call({position:222});
+          flush();
+          expect(sound.position).toBe(222);
         });
       });
     });

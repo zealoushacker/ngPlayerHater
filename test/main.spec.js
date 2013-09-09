@@ -30,6 +30,12 @@ describe('facts', function () {
     expect(song.stop).toHaveBeenCalled();
   }));
 
+  it('pauses all songs when pause is called', inject(function(phSoundManager, playerHater) {
+    spyOn(phSoundManager, 'pauseAll');
+    playerHater.pause();
+    expect(phSoundManager.pauseAll).toHaveBeenCalled();
+  }));
+
   it('creates a new song', inject(function (playerHater, PlayerHaterSound) {
     var song = playerHater.newSong(soundArguments);
     expect(song).toBeDefined();
@@ -69,5 +75,49 @@ describe('facts', function () {
       expect(playerHater.nowPlaying.title).toEqual(soundArguments.title);
       expect(playerHater.nowPlaying.artist).toEqual(soundArguments.artist);
     }));
+
+    it('resumes playback if no url is passed and there is a paused song loaded', inject(function (playerHater) {
+      spyOn(playerHater, 'resume');
+      playerHater.play(soundArguments);
+      expect(playerHater.resume).not.toHaveBeenCalled();
+      playerHater.play();
+      expect(playerHater.resume).toHaveBeenCalled();
+    }));
+  });
+
+  describe('#resume', function () {
+    it('calls the now playing songs resume method', inject(function (playerHater) {
+      playerHater.play(soundArguments);
+      spyOn(playerHater.nowPlaying._sound, 'resume');
+      expect(playerHater.nowPlaying._sound.resume).not.toHaveBeenCalled();
+      playerHater.resume();
+      expect(playerHater.nowPlaying._sound.resume).toHaveBeenCalled();
+    }));
+
+    it('throws an error when there is no currently loaded song', inject(function (playerHater) {
+      expect(function () { 
+        playerHater.resume();
+      }).toThrow("No Song Loaded");
+    }));
+  });
+
+  describe('Songs', function () {
+    var song;
+
+    beforeEach(inject(function (playerHater) {
+      song = playerHater.newSong({url:"/mp3.mp3", title: "Wishes"});
+    }));
+
+    it('sets its position based on the sounds position', function () {
+      song._sound.position = 222;
+      flush();
+      expect(song.position).toBe(222);
+    });
+
+    it('sets its duration based on the sounds duration', function () {
+      song._sound.duration = 617;
+      flush();
+      expect(song.duration).toBe(617);
+    });
   });
 });

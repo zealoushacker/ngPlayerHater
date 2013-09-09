@@ -9,20 +9,23 @@
 */
 !function() {
   var DEBUG;
-  DEBUG = {
-    log: function() {
-      console.log.apply(console, [ "ngPlayerHater @ " + new Date() ].concat(Array.prototype.slice.call(arguments)));
-    },
-    instrument: function(method, args) {
-      var msg = method + "(";
-      args.length && (msg += args.join(", "));
-      msg += ")";
-      this.log.call(this, "=> " + msg);
-    }
-  };
   !function() {
     "use strict";
-    var Sound, $scope;
+    DEBUG = {
+      log: function() {
+        console.log.apply(console, [ "ngPlayerHater @ " + new Date() ].concat(Array.prototype.slice.call(arguments)));
+      },
+      instrument: function(method, args) {
+        var msg = method + "(";
+        args.length && (msg += args.join(", "));
+        msg += ")";
+        this.log.call(this, "=> " + msg);
+      }
+    };
+  }();
+  !function() {
+    "use strict";
+    var soundManager, Sound, $scope;
     function Song(options) {
       var self = this;
       angular.forEach(options, function(value, key) {
@@ -35,31 +38,57 @@
       }, function(paused) {
         self.paused = paused;
       });
+      $scope.$watch(function() {
+        return sound.position;
+      }, function(position) {
+        self.position = position;
+      });
+      $scope.$watch(function() {
+        return sound.duration;
+      }, function(duration) {
+        self.duration = duration;
+      });
     }
-    Song.prototype.play = function() {
-      return this._sound.play();
-    };
-    function PlayerHaterService(PlayerHaterSound, $rootScope) {
+    function proxyToSound(method) {
+      return function() {
+        return this._sound[method].apply(this._sound, Array.prototype.slice.call(arguments));
+      };
+    }
+    var methods = [ "play", "stop", "resume" ];
+    for (var i = methods.length - 1; i >= 0; i -= 1) Song.prototype[methods[i]] = proxyToSound(methods[i]);
+    function PlayerHaterService(phSoundManager, PlayerHaterSound, $rootScope) {
+      soundManager = phSoundManager;
       Sound = PlayerHaterSound;
       $scope = $rootScope;
       var self = this;
       this.paused = true;
       $scope.$watch(function() {
-        return self.nowPlaying.paused;
+        return (self.nowPlaying || {
+          paused: true
+        }).paused;
       }, function(paused) {
         self.paused = paused;
       });
     }
     PlayerHaterService.prototype.play = function(song) {
+      if ("undefined" === typeof song) return this.resume();
       song.constructor !== Song && (song = this.newSong(song));
+      "undefined" !== typeof this.nowPlaying && this.nowPlaying.stop();
       this.nowPlaying = song;
       this.nowPlaying.play();
       return this.nowPlaying;
     };
+    PlayerHaterService.prototype.resume = function() {
+      if ("undefined" === typeof this.nowPlaying) throw "No Song Loaded";
+      this.nowPlaying.resume();
+    };
+    PlayerHaterService.prototype.pause = function() {
+      soundManager.pauseAll();
+    };
     PlayerHaterService.prototype.newSong = function(songArguments) {
       return new Song(songArguments);
     };
-    PlayerHaterService.$inject = [ "PlayerHaterSound", "$rootScope" ];
+    PlayerHaterService.$inject = [ "phSoundManager", "PlayerHaterSound", "$rootScope" ];
     angular.module("ngPlayerHater", [ "phSoundManager" ]).service("playerHater", PlayerHaterService);
   }();
   angular.module("phSoundManager", [ "phSoundManager.service", "phSoundManager.sound" ]);
@@ -143,6 +172,7 @@
           } else if (3 === this.readyState) {
             sound.loading = false;
             sound.error = false;
+            sound.duration = this.duration;
           }
         }),
         onpause: asyncDigest(function() {
@@ -161,6 +191,14 @@
         onid3: asyncDigest(function() {
           DEBUG.instrument("onid3", arguments);
           angular.copy(this.id3, sound.id3);
+        }),
+        whileloading: asyncDigest(function() {
+          DEBUG.instrument("whileloading", arguments);
+          sound.duration = this.durationEstimate;
+        }),
+        whileplaying: asyncDigest(function() {
+          DEBUG.instrument("whileplaying", arguments);
+          sound.position = this.position;
         })
       };
     }
@@ -174,6 +212,7 @@
       this.paused = true;
       this.error = false;
       this.duration = void 0;
+      this.position = void 0;
       this.id3 = {};
       this.sound = soundManager2.createSound(options);
     }
