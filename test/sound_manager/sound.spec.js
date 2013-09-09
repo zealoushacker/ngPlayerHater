@@ -1,7 +1,7 @@
-describe('Sound', function () {
+describe('PlayerHaterSound', function () {
   'use strict';
 
-  beforeEach(module('soundManager2'));
+  beforeEach(module('phSoundManager'));
 
   var soundManager = window.soundManager;
   var soundMethods = ('destruct load mute pause play resume setPan setPosition ' +
@@ -21,20 +21,20 @@ describe('Sound', function () {
     });
   }
 
-  it('provides Sound constructor for injection', inject(function (Sound) {
-    expect(Sound).toBeDefined();
+  it('provides Sound constructor for injection', inject(function (PlayerHaterSound) {
+    expect(PlayerHaterSound).toBeDefined();
   }));
 
-  it('requires the url argument to be present', inject(function (Sound) {
-    expect(function() { Sound.call({}) }).toThrow();
+  it('requires the url argument to be present', inject(function (PlayerHaterSound) {
+    expect(function() { PlayerHaterSound.call({}) }).toThrow();
   }));
 
   describe('newly created', function () {
     var url, sound;
 
-    beforeEach(inject(function(Sound) {
+    beforeEach(inject(function (PlayerHaterSound) {
       url = '/mp3.mp3';
-      sound = new Sound(url);
+      sound = new PlayerHaterSound(url);
     }));
 
     it('is not playing', function () {

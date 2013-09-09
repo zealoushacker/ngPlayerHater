@@ -43,9 +43,8 @@ module.exports = function (grunt) {
       },
       debug: {
         options: {
-          banner: '/**\n' + grunt.file.read('./src/BANNER').replace(/^/gm, '* ') + '\n*/\n(function(){',
-          separator: '})();(function(){',
-          footer: '})()'
+          banner: '/**\n*\n' + grunt.file.read('./src/BANNER').replace(/^/gm, '* ') + '\n*/',
+          separator: ';'
         },
         src: ['src/**/*.js'],
         dest: 'tmp/<%= pkg.name %>-<%= pkg.version %>.js'
@@ -54,10 +53,10 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         compress: {
+          unsafe: true,
           global_defs: {
             DEBUG: false
-          },
-          dead_code: true
+          }
         },
         mangle: true
       },
@@ -127,7 +126,6 @@ module.exports = function (grunt) {
         browser: true,
         devel: true,
         strict: true,
-        globalstrict: true,
         globals: {
           angular: false,
           expect: false,
@@ -139,7 +137,8 @@ module.exports = function (grunt) {
           DEBUG: true,
           spyOn: false,
           jasmine: true,
-          process: false
+          process: false,
+          spyOnInjection: false
         }
       }
     }

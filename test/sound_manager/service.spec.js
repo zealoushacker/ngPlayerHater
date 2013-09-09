@@ -1,7 +1,7 @@
 describe('soundManager2', function () {
   'use strict';
   
-  beforeEach(module('soundManager2'));
+  beforeEach(module('phSoundManager'));
 
   var soundManager = window.soundManager;
 
@@ -25,19 +25,19 @@ describe('soundManager2', function () {
     });
   }
 
-  it('defines soundManager2 for injection', inject(function (SoundManager2) {
-    expect(SoundManager2).toBeDefined();
+  it('defines soundManager2 for injection', inject(function (phSoundManager) {
+    expect(phSoundManager).toBeDefined();
   }));
 
   it('calls through to the configured onready', function () {
     var executed = false;
-    module('soundManager2', function (SoundManager2Provider) {
-      SoundManager2Provider.options.onready = function () {
+    module('phSoundManager', function (phSoundManagerProvider) {
+      phSoundManagerProvider.options.onready = function () {
         executed = true;
       };
     });
-    inject(function (SoundManager2) {
-      if (SoundManager2) {
+    inject(function (phSoundManager) {
+      if (phSoundManager) {
         expect(executed).toBe(false);
         soundManagerLoaded();
         expect(executed).toBe(true);
@@ -46,68 +46,68 @@ describe('soundManager2', function () {
   });
 
   it('calls setup on soundManager', function () {
-    inject(function (SoundManager2) {
-      SoundManager2.createSound();
+    inject(function (phSoundManager) {
+      phSoundManager.createSound();
       expect(soundManager.setup).toHaveBeenCalled();
     });
   });
 
-  it('defers sound creation until soundmanager is loaded', inject(function (SoundManager2) {
-    SoundManager2.createSound(null);
+  it('defers sound creation until soundmanager is loaded', inject(function (phSoundManager) {
+    phSoundManager.createSound(null);
     expect(soundManager.createSound).not.toHaveBeenCalled();
   }));
   
-  it('promises sounds', inject(function (SoundManager2) {
+  it('promises sounds', inject(function (phSoundManager) {
     var args = {url:'/test.mp3'};
-    SoundManager2.createSound(args);
+    phSoundManager.createSound(args);
     soundManagerLoaded();
     expect(soundManager.createSound.mostRecentCall.args[0]).toBe(args);
   }));
 
-  it('checks to see if you can play a link', inject(function (SoundManager2) {
-    SoundManager2.canPlayLink('foo');
+  it('checks to see if you can play a link', inject(function (phSoundManager) {
+    phSoundManager.canPlayLink('foo');
     soundManagerLoaded();
     expect(soundManager.canPlayLink.mostRecentCall.args[0]).toBe('foo');
   }));
 
-  it('checks to see if you can play a MIME type', inject(function (SoundManager2) {
-    SoundManager2.canPlayMIME('foo');
+  it('checks to see if you can play a MIME type', inject(function (phSoundManager) {
+    phSoundManager.canPlayMIME('foo');
     soundManagerLoaded();
     expect(soundManager.canPlayMIME.mostRecentCall.args[0]).toBe('foo');
   }));
 
-  it('checks to see if you can play a URL', inject(function (SoundManager2) {
-    SoundManager2.canPlayURL('foo');
+  it('checks to see if you can play a URL', inject(function (phSoundManager) {
+    phSoundManager.canPlayURL('foo');
     soundManagerLoaded();
     expect(soundManager.canPlayURL.mostRecentCall.args[0]).toBe('foo');
   }));
 
-  it('mutes all sounds', inject(function (SoundManager2) {
-    SoundManager2.mute();
+  it('mutes all sounds', inject(function (phSoundManager) {
+    phSoundManager.mute();
     soundManagerLoaded();
     expect(soundManager.mute).toHaveBeenCalled();
   }));
 
-  it('pauses all sounds', inject(function (SoundManager2) {
-    SoundManager2.pauseAll();
+  it('pauses all sounds', inject(function (phSoundManager) {
+    phSoundManager.pauseAll();
     soundManagerLoaded();
     expect(soundManager.pauseAll).toHaveBeenCalled();
   }));
 
-  it('resumes all sounds', inject(function (SoundManager2) {
-    SoundManager2.resumeAll();
+  it('resumes all sounds', inject(function (phSoundManager) {
+    phSoundManager.resumeAll();
     soundManagerLoaded();
     expect(soundManager.resumeAll).toHaveBeenCalled();
   }));
 
-  it('stops all sounds', inject(function (SoundManager2) {
-    SoundManager2.stopAll();
+  it('stops all sounds', inject(function (phSoundManager) {
+    phSoundManager.stopAll();
     soundManagerLoaded();
     expect(soundManager.stopAll).toHaveBeenCalled();
   }));
 
-  it('unmutes all sounds', inject(function (SoundManager2) {
-    SoundManager2.unmute();
+  it('unmutes all sounds', inject(function (phSoundManager) {
+    phSoundManager.unmute();
     soundManagerLoaded();
     expect(soundManager.unmute).toHaveBeenCalled();
   }));
