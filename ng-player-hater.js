@@ -1,6 +1,6 @@
 /**
 *
-* ngPlayerHater v0.0.2
+* ngPlayerHater v0.0.4
 * 
 * Copyright (c) 2013 Chris Rhoden, Public Radio Exchange. All Rights Reserved
 * 
