@@ -110,6 +110,35 @@ describe('facts', function () {
     }));
   });
 
+  describe('makeSongClass', function () {
+    it('returns a new Song class when no arguments are passed', inject(function(playerHater) {
+      expect(playerHater.makeSongClass().prototype.play).toBeDefined();
+    }));
+
+    it('extends the passed argument with Song when a class is passed', inject(function(playerHater) {
+      var MyThing = function () {
+        this.foo = 'bar';
+      };
+
+      var Sc = playerHater.makeSongClass(MyThing);
+
+      expect(new Sc().play).toBeDefined();
+      expect(new Sc().foo).toEqual('bar');
+    }));
+
+    it('handles class methods on passed functions', inject(function (playerHater) {
+      var MyThing = function () {
+
+      };
+
+      MyThing.find = function (){};
+
+      var Sc = playerHater.makeSongClass(MyThing);
+
+      expect(Sc.find).toBeDefined();
+    }));
+  });
+
   describe('Songs', function () {
     var song;
 

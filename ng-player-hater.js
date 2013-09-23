@@ -1,6 +1,6 @@
 /**
 *
-* ngPlayerHater v0.0.4
+* ngPlayerHater v0.0.5
 * 
 * Copyright (c) 2013 Chris Rhoden, Public Radio Exchange. All Rights Reserved
 * 
@@ -27,24 +27,26 @@
     "use strict";
     var soundManager, Sound, $scope;
     function Song(options) {
-      var self = this;
       angular.forEach(options, function(value, key) {
         this[key] = value;
       }, this);
       this.paused = true;
-      var sound = this._sound = new Sound(options.url);
+      this._sound = new Sound(options.url);
+      bindSound(this);
+    }
+    function bindSound(self) {
       $scope.$watch(function() {
-        return sound.paused;
+        return self._sound.paused;
       }, function(paused) {
         self.paused = paused;
       });
       $scope.$watch(function() {
-        return sound.position;
+        return self._sound.position;
       }, function(position) {
         self.position = position;
       });
       $scope.$watch(function() {
-        return sound.duration;
+        return self._sound.duration;
       }, function(duration) {
         self.duration = duration;
       });
@@ -90,6 +92,31 @@
     };
     PlayerHaterService.prototype.seekTo = function(position) {
       return this.nowPlaying.setPosition(position);
+    };
+    PlayerHaterService.prototype.makeSongClass = function(klass) {
+      if ("undefined" === typeof klass) {
+        klass = function SongType() {
+          Song.apply(this, arguments);
+        };
+        klass.prototype = angular.copy(Song.prototype);
+        return klass;
+      }
+      if ("function" === typeof klass) {
+        var klasss = function SongType() {
+          klass.apply(this, arguments);
+          var self = this;
+          $scope.$watch(function() {
+            return self.url;
+          }, function(url) {
+            self._sound = "undefined" !== typeof url ? new Sound(url) : void 0;
+          });
+          bindSound(this);
+        };
+        angular.extend(klasss, klass);
+        angular.extend(klasss.prototype, klass.prototype);
+        angular.extend(klasss.prototype, Song.prototype);
+        return klasss;
+      }
     };
     PlayerHaterService.$inject = [ "phSoundManager", "PlayerHaterSound", "$rootScope" ];
     angular.module("ngPlayerHater", [ "phSoundManager" ]).service("playerHater", PlayerHaterService);
