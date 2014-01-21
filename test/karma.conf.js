@@ -18,6 +18,6 @@ module.exports = function (config) {
     reporters: ['progress', 'coverage', 'osx'],
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['Chrome', 'Firefox', 'PhantomJS']
+    browsers: ['Chrome', 'PhantomJS']
   });
 };

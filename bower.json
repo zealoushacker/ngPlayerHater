@@ -1,6 +1,6 @@
 {
   "name": "ngPlayerHater",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/PRX/ngPlayerHater",
   "authors": [
     "chrisrhoden <carhoden@gmail.com>"
@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "soundmanager": "V2.97a.20130512",
+    "soundmanager": "*",
     "angular": "~1.0"
   },
   "devDependencies": {

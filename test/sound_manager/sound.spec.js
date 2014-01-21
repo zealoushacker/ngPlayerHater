@@ -15,10 +15,10 @@ describe('PlayerHaterSound', function () {
   });
 
   function soundManagerLoaded () {
-    inject(function ($rootScope) {
+    inject(function ($timeout) {
       if (typeof soundManager.setup.mostRecentCall.args[0] !== 'undefined') {
         soundManager.setup.mostRecentCall.args[0].onready();
-        $rootScope.$digest();
+        $timeout.flush();
       }
     });
   }

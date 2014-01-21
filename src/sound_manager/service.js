@@ -22,13 +22,15 @@
     };
   }
 
-  function getSoundManager($q, $rootScope) {
+
+  getSoundManager.$inject = ['$q', '$timeout'];
+  function getSoundManager($q, $timeout) {
     var deferred = $q.defer(),
       wrap = wrapper(deferred.promise),
       options = soundManager2Provider.options;
 
     function resolvePromise() {
-      $rootScope.$apply(function () {
+      $timeout(function () {
         deferred.resolve(window.soundManager);
         if (typeof soundManager2Provider.options.originalonready === 'function') {
           soundManager2Provider.options.originalonready.call(null);
@@ -60,8 +62,6 @@
       unmute:      wrap('unmute')
     };
   }
-
-  getSoundManager.$inject = ['$q', '$rootScope'];
 
   angular.module('phSoundManager.service', ['ng']).provider('phSoundManager', soundManager2Provider);
 })();

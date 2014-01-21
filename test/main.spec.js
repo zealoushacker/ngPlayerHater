@@ -16,6 +16,52 @@ describe('facts', function () {
     expect(playerHater.paused).toBe(true);
   }));
 
+  it('can make a multipart song', inject(function (playerHater) {
+    var song = playerHater.newSong(soundArguments, angular.copy(soundArguments));
+    expect(song).toBeDefined();
+  }));
+
+  it('can accept songs as part of the multipart song', inject(function (playerHater) {
+    var song = playerHater.newSong(soundArguments);
+    var songList = playerHater.newSong(song, soundArguments);
+    expect(songList).toBeDefined();
+  }));
+
+  it('plays the first song in a multipart', inject(function (playerHater, $q) {
+    var song = playerHater.newSong(soundArguments);
+    spyOn(song, 'play');
+    var songList = playerHater.newSong(song, soundArguments);
+    songList.load = function () { return $q.when(songList); };
+    songList.play();
+    flush();
+    expect(song.play).toHaveBeenCalled();
+  }));
+
+  it('sets the position by skipping to the correct sound', inject(function (playerHater) {
+    var song = playerHater.newSong(soundArguments);
+    song._sound.duration = 10;
+    var songTwo = playerHater.newSong(soundArguments);
+    songTwo._sound.duration = 55;
+    var songList = playerHater.newSong(song, songTwo, soundArguments);
+    songList.setPosition(5);
+    flush();
+    expect(songList.currentSound()).toBe(song);
+    songList.setPosition(13);
+    flush();
+    expect(songList.currentSound()).toBe(songTwo);
+  }));
+
+  it('has a position that is a sum of the pieces behind it', inject(function (playerHater) {
+    var song = playerHater.newSong(soundArguments);
+    song._sound.duration = 10;
+    var songtwo = playerHater.newSong(soundArguments);
+    songtwo._sound.position = 3;
+    var songList = playerHater.newSong(song, songtwo);
+    songList._sPos = 1;
+    flush();
+    expect(songList.position).toBe(13);
+  }));
+
   it('is not paused when the now playing song is not paused', inject(function(playerHater) {
     playerHater.play(soundArguments);
     playerHater.nowPlaying._sound.paused = false;
@@ -110,34 +156,56 @@ describe('facts', function () {
     }));
   });
 
-  describe('makeSongClass', function () {
-    it('returns a new Song class when no arguments are passed', inject(function(playerHater) {
-      expect(playerHater.makeSongClass().prototype.play).toBeDefined();
+  describe('#togglePlayback', function () {
+    it('calls resume when nowPlaying is paused', inject(function (playerHater) {
+      var spy = jasmine.createSpyObj('song', ['resume']);
+      spy.paused = true;
+      playerHater.nowPlaying = spy;
+      playerHater.togglePlayback();
+      expect(spy.resume).toHaveBeenCalled();
     }));
 
-    it('extends the passed argument with Song when a class is passed', inject(function(playerHater) {
-      var MyThing = function () {
-        this.foo = 'bar';
-      };
-
-      var Sc = playerHater.makeSongClass(MyThing);
-
-      expect(new Sc().play).toBeDefined();
-      expect(new Sc().foo).toEqual('bar');
+    it('calls pause when nowPlaying is playing', inject(function (playerHater) {
+      var spy = jasmine.createSpyObj('song', ['pause']);
+      spy.paused = false;
+      playerHater.nowPlaying = spy;
+      playerHater.togglePlayback();
+      expect(spy.pause).toHaveBeenCalled();
     }));
 
-    it('handles class methods on passed functions', inject(function (playerHater) {
-      var MyThing = function () {
-
-      };
-
-      MyThing.find = function (){};
-
-      var Sc = playerHater.makeSongClass(MyThing);
-
-      expect(Sc.find).toBeDefined();
+    it('does not throw an error if nothing is playing', inject(function (playerHater) {
+      playerHater.togglePlayback();
     }));
   });
+
+  // describe('makeSongClass', function () {
+  //   it('returns a new Song class when no arguments are passed', inject(function(playerHater) {
+  //     expect(playerHater.makeSongClass().prototype.play).toBeDefined();
+  //   }));
+
+  //   it('extends the passed argument with Song when a class is passed', inject(function(playerHater) {
+  //     var MyThing = function () {
+  //       this.foo = 'bar';
+  //     };
+
+  //     var Sc = playerHater.makeSongClass(MyThing);
+
+  //     expect(new Sc().play).toBeDefined();
+  //     expect(new Sc().foo).toEqual('bar');
+  //   }));
+
+  //   it('handles class methods on passed functions', inject(function (playerHater) {
+  //     var MyThing = function () {
+
+  //     };
+
+  //     MyThing.find = function (){};
+
+  //     var Sc = playerHater.makeSongClass(MyThing);
+
+  //     expect(Sc.find).toBeDefined();
+  //   }));
+  // });
 
   describe('Songs', function () {
     var song;

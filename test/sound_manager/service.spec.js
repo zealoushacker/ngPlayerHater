@@ -19,9 +19,9 @@ describe('soundManager2', function () {
   });
 
   function soundManagerLoaded () {
-    inject(function ($rootScope) {
+    inject(function ($timeout) {
       soundManager.setup.mostRecentCall.args[0].onready();
-      $rootScope.$digest();
+      $timeout.flush();
     });
   }
 

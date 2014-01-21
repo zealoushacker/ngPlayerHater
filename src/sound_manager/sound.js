@@ -3,6 +3,7 @@
 
   var soundManager2, timeout;
 
+  SoundFactory.$inject = ['phSoundManager', '$timeout'];
   function SoundFactory(phSoundManager, $timeout) {
     soundManager2 = phSoundManager;
     timeout = $timeout;
@@ -65,8 +66,6 @@
       })
     };
   }
-
-  SoundFactory.$inject = ['phSoundManager', '$timeout'];
 
   function Sound (url) {
     if (typeof url === 'undefined') {
