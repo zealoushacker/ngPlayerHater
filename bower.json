@@ -1,6 +1,6 @@
 {
   "name": "ngPlayerHater",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/PRX/ngPlayerHater",
   "authors": [
     "chrisrhoden <carhoden@gmail.com>"
@@ -21,9 +21,9 @@
   ],
   "dependencies": {
     "soundmanager": "*",
-    "angular": "~1.0"
+    "angular": ">=1.0"
   },
   "devDependencies": {
-    "angular-mocks": "~1.0"
+    "angular-mocks": ">=1.0"
   }
 }
