@@ -74,6 +74,7 @@
     var options   = generateCallbacks(this);
     options.url   = url;
     this.playing  = false;
+    this.autoLoad = true;
     this.loading  = false;
     this.paused   = true;
     this.error    = false;
